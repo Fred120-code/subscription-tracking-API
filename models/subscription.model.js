@@ -75,7 +75,6 @@ SubscriptionSchema.pre('save', function(next) {
             monthly: 30,
             yearly: 365,
         }
-
         this.renewalDate = new Date(this.startDate)
         this.renewalDate.setDate(this.renewalDate.getDate() + renewalPeriod[this.frequency])
     }
@@ -86,3 +85,7 @@ SubscriptionSchema.pre('save', function(next) {
     }
     next()
 })
+
+const Subscription = mongoose.model('Subscription', SubscriptionSchema);
+
+export default Subscription;

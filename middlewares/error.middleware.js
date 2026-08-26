@@ -1,10 +1,10 @@
 const errorMiddleware = (err, req, res, next ) => {
     try{
-        let error = {...err}
+        let error = { ...err }
         error.message = err.message;
-        console.error(error)
+        console.error(err)
 
-        //Mongoose abd ObjectId
+        //Mongoose bad ObjectId
         if(err.name === 'CastError'){
             const message = "Resource not found"
             error = new Error(message)
@@ -31,4 +31,4 @@ const errorMiddleware = (err, req, res, next ) => {
     }
 }
 
-export  default  errorMiddleware()
+export default errorMiddleware

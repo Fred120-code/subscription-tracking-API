@@ -20,10 +20,10 @@ export const signUp = async (req, res, next) => {
         }
 
         //hash password
-        const salt = await  bcrypt.genSalt(password)
+        const salt = await  bcrypt.genSalt(10)
         const hashPassword = await bcrypt.hash(password, salt)
 
-        const newUser = await  User.create([
+        const newUser = await User.create([
             {
                 name, email, password: hashPassword
             }

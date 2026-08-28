@@ -10,12 +10,20 @@ export const signUp = async (req, res, next) => {
 
     try {
         const { name, email, password } = req.body;
+
+        // Sécurité : Vérifier que les données ne sont pas vides
+        if (!name || !email || !password) {
+            const error = new Error("Please provide name, email and password")
+            error.statusCode = 400
+            throw error
+        }
+
         const existingUser = await  User.findOne({email})
 
         //check if a user is already exists
         if(existingUser){
             const error = new Error("User already exists")
-            error.statusCode = 401
+            error.statusCode = 409
             throw error
         }
 
@@ -23,11 +31,11 @@ export const signUp = async (req, res, next) => {
         const salt = await  bcrypt.genSalt(10)
         const hashPassword = await bcrypt.hash(password, salt)
 
-        const newUser = await User.create([
-            {
-                name, email, password: hashPassword
-            }
-        ], { session })
+        const newUser = await User.create([{ name, email, password: hashPassword }], { session })
+
+        // Valider et fermer la transaction avec succès
+        await session.commitTransaction()
+        await session.endSession()
 
         const token = jwt.sign(
             {userId: newUser[0]._id},
